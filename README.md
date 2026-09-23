@@ -1,470 +1,395 @@
-🛡️ FinShield
+# FinShield
 
-Digital Lending Risk Intelligence & Safety Hub
+## Digital Lending Risk Intelligence & Safety Hub
 
-FinShield is a web-based digital lending safety platform designed tohelp users evaluate the credibility and potential risk of instant-loanapplications before installing or using them.
+FinShield is an ML-based digital lending risk assessment platform that helps
+users evaluate potentially risky instant-loan applications before installing
+or using them.
 
-Predatory loan applications can expose borrowers to excessivepermissions, unclear disclosures, misleading information, and abusiverecovery practices. FinShield brings multiple safety signals togetherinto a simple, explainable interface so users can make more informeddecisions.
+It combines application metadata, regulatory indicators, lending disclosures,
+review sentiment, and other risk signals into an explainable assessment.
 
-Live Demo:https://finshield---loan-app-detectorgit-bywwrgim8e5mbnpnzn3qme.streamlit.app/
+> FinShield is an informational decision-support tool, not a financial, legal,
+> or regulatory authority.
 
-📌 Problem Statement
+## Live Demo
 
-RBI-flagged predatory loan apps can harass and coerce borrowers, whileusers often have no simple way to assess an app's risk before installingit.
+[Launch FinShield](https://finshield---loan-app-detectorgit-bywwrgim8e5mbnpnzn3qme.streamlit.app/)
 
-Existing approaches have several limitations:
+## Problem
 
-Manual verification is time-consuming.
+Digital lending applications can expose borrowers to excessive permissions,
+unclear disclosures, misleading information, high borrowing costs, and abusive
+recovery practices. Users often lack a simple way to evaluate these risks
+before using an application.
 
-Users may struggle to interpret app permissions and lendingdisclosures.
+FinShield addresses this by combining multiple risk indicators into one
+user-friendly and explainable assessment.
 
-App ratings alone do not provide enough context.
+## Solution
 
-Reviews and complaints are rarely analyzed together with other riskindicators.
+FinShield evaluates lending applications using application-level and
+review-based signals.
 
-Users need a simple explanation of why an app may be risky.
+It provides:
 
-FinShield addresses this gap through an intelligent, multi-factor riskassessment and a user-friendly safety hub.
+- Risk score and risk level
+- Legitimate or potentially predatory assessment
+- RBI and regulatory indicators
+- Terms and disclosure assessment
+- Review sentiment and harassment-related signals
+- Key risk drivers and explanations
+- Borrower Safety Profile
+- Evaluated lending-app rankings
+- Loan-cost and APR calculators
+- Digital lending safety guidance
 
-💡 Our Solution
+The goal is to explain why an application may be considered risky rather than
+simply displaying a score.
 
-FinShield evaluates digital lending applications using multipleindicators and presents the results through an intuitive risk assessmentinterface.
+## Key Features
 
-The platform can provide:
+### 1. App Risk Scorer
 
-Risk score and risk level
+Users can select a pre-analyzed application or audit an unlisted source using
+an application identifier, URL, website, or package information.
 
-Legitimate / predatory-oriented assessment
+The module provides:
 
-RBI/regulatory status indicators
+- Overall risk assessment
+- Visual Riskometer
+- Individual risk indicators
+- Explainable risk drivers
+- Assessment status during analysis
 
-Terms and disclosure assessment
+### 2. Explainable Riskometer
 
-Review sentiment indicators
+Risk levels include:
 
-Harassment/recovery-related review mentions
+`Low` · `Low–Moderate` · `Moderate` · `Moderately High` · `High` · `Very High`
 
-Key risk drivers and explanations
+Risk drivers may include regulatory status, disclosure quality, review
+sentiment, harassment-related mentions, permission concerns, and other
+compliance indicators.
 
-Verified website information where available
+### 3. Borrower Safety Profiler
 
-Borrower safety profiling
+A questionnaire evaluates lending and privacy-safety habits such as:
 
-Lending product rankings
+- Instant-loan usage
+- Permission practices
+- Lender verification
+- Emergency-fund availability
 
-Financial advisory calculations
+It produces a Safety Index and borrower category.
 
-RBI digital lending safety guidance
+### 4. Product Rankings
 
-The goal is not simply to display a score, but to make the underlyingrisk signals easier for a user to understand.
+Users can search and compare evaluated lending applications using app names or
+package IDs.
 
-✨ Key Features
+### 5. Financial Advisory Tools
 
-1. 🔍 App Risk Scorer
+#### Personal Loan Prepayment Calculator
 
-The primary FinShield module allows users to evaluate a lendingapplication.
+- Monthly EMI
+- Total interest
+- Potential interest savings
 
-Users can:
+#### Hidden Fees and True APR Detector
 
-Select a pre-analyzed lending application.
-
-Audit an unlisted application.
-
-Provide a Play Store link, website URL, APK/package identifier, orsupported app reference.
-
-View an overall risk verdict.
-
-See a visual Riskometer.
-
-Review individual risk indicators and explanations.
-
-The current interface also supports auditing web domains/unlistedsources and displays an active assessment status while the analysis isbeing performed.
-
-2. 📊 Riskometer & Explainable Verdict
-
-Instead of presenting only raw data, FinShield converts the assessmentinto an easy-to-understand risk level.
-
-Example verdict categories include:
-
-Low
-
-Low--Moderate
-
-Moderate
-
-Moderately High
-
-High
-
-Very High
-
-The dashboard can also explain important risk drivers, such as:
-
-Regulatory status
-
-Terms/disclosure quality
-
-Harassment-related review mentions
-
-Strongly negative reviews
-
-Review sentiment
-
-Review characteristics
-
-Other compliance or permission concerns
-
-3. 👤 Borrower Safety Profiler
-
-The Borrower Safety Profiler evaluates a user's lending andprivacy-safety habits through a questionnaire.
-
-It considers factors such as:
-
-Frequency of instant-loan usage
-
-Whether users grant contacts/gallery permissions
-
-Whether lenders are verified through RBI resources
-
-Availability of an emergency fund
-
-The result is a Borrower Safety Profile with a Safety Index and aneasy-to-understand borrower category.
-
-For example:
-
-Prudent Borrower
-
-Vulnerable Borrower
-
-This module is intended to encourage safer borrowing and better privacypractices.
-
-4. 📈 Digital Lending App Rankings
-
-The Product Rankings module provides an evaluated database of lendingapplications.
-
-Users can search by:
-
-App name
-
-Package ID / App ID
-
-The interface presents evaluated applications in a searchable table,helping users compare lending apps before making a decision.
-
-5. 🧮 Financial Advisory Calculators
-
-FinShield includes financial tools designed to help users understand theactual cost of borrowing.
-
-Personal Loan Prepayment Calculator
-
-Calculates:
-
-Monthly EMI
-
-Total interest payable
-
-Potential prepayment interest savings
-
-Hidden Fees & True APR Detector
-
-Helps identify the effective cost of short-term borrowing byconsidering:
-
-Disbursed amount
-
-Repayment amount
-
-Loan duration
-
-Extra fees and interest
-
-Annualized APR
-
-The tool can flag unusually high annualized costs and display a warningwhen the calculated APR crosses a defined safety threshold.
-
-6. 📜 RBI Digital Lending Guidelines
-
-The RBI Guidelines section provides a simplified safety checklistcovering important digital lending practices, including:
-
-Prohibited access to sensitive personal data
-
-Key Fact Statement (KFS)
-
-Direct bank-account transfer requirements
-
-Grievance redressal information
-
-Verification through RBI resources
-
-Cybercrime reporting guidance
-
-The section is designed to help users understand important safety checkswithout needing to interpret lengthy regulatory documents themselves.
-
-7. 🌙 Dark Mode & User-Friendly UI
-
-FinShield uses a modern dashboard-style interface with:
-
-Dark mode
-
-Modular navigation
-
-Visual risk indicators
-
-Responsive information cards
-
-Simple explanations
-
-Clear warning states
-
-The interface is designed for users with minimal technical knowledge.
-
-⚙️ How FinShield Works
-
-                    ┌──────────────────────┐
-                    │   User Input         │
-                    │ App / URL / Package  │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Data Acquisition     │
-                    │ Play Store / Web     │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Data Preprocessing   │
-                    │ & Feature Engineering│
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Risk Analysis Engine │
-                    │ ML + Review Analysis │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Risk Score & Level   │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ Explainable Results  │
-                    │ + Safety Guidance    │
-                    └──────────────────────┘
-
-🤖 AI / ML Component
-
-The original project architecture uses an ML-based classificationpipeline to distinguish between legitimate and potentially predatorylending applications.
-
-The analysis combines multiple app-level signals rather than relyingonly on a single rating.
-
-The project presentation reports:
-
-80+ manually verified loan applications
-
-88% model accuracy
-
-Approximately 2 seconds prediction time per app
-
-These figures describe the project evaluation presented duringdevelopment and may change as the dataset and model are expanded.
-
-🧠 Review & Sentiment Analysis
-
-User reviews provide important signals about the real-world experienceof borrowers.
-
-FinShield uses sentiment analysis to derive indicators such as:
-
-Average review tone
-
-Strongly negative review percentage
-
-Harassment-related mentions
-
-Review length characteristics
-
-These signals are combined with other app indicators to provide abroader risk assessment.
-
-🛠️ Technology Stack
-
-Technology                          Purpose
-
-Python                          Core application and ML pipeline
-
-Streamlit                       Interactive web application
-
-Scikit-learn                    Model training, pipeline,evaluation and prediction
-
-VADER Sentiment                 Review sentiment analysis
-
-Pandas                          Data processing and analysis
-
-NumPy                           Numerical computation
-
-Google Play metadata scraping   App metadata, permissions, installsand review collection
-
-GitHub                          Version control and collaboration
-
-The project presentation also describes a custom data collectionpipeline for Google Play Store metadata, permissions, install counts anduser reviews.
-
-🔄 Development Pipeline
-
-Google Play Store / Public Sources
-              ↓
-       Data Collection
-              ↓
-          Dataset
-              ↓
-      Data Preprocessing
-              ↓
-     Feature Engineering
-              ↓
-       Pattern Analysis
-              ↓
-        ML Pipeline
-              ↓
-      Model Evaluation
-              ↓
-        Deployment
-              ↓
-        FinShield UI
-
-📊 Current FinShield Modules
-
-Module                        Purpose
-
-🔍 App Risk Scorer            Evaluate lending-app risk👤 Borrower Safety Profiler   Assess borrower safety habits📊 Product Rankings           Search and compare evaluated apps🧮 Advisory Calculators       Understand loan costs and APR📜 RBI Guidelines             Provide lending safety guidance
-
-🚀 Getting Started
-
-Prerequisites
-
-Make sure Python is installed on your system.
-
-Clone the repository
-
+- Disbursed amount
+- Repayment amount
+- Loan duration
+- Additional fees
+- Annualized APR
+
+### 6. RBI Safety Guidance
+
+The application provides a simplified checklist covering areas such as:
+
+- Key Fact Statement (KFS)
+- Sensitive-data access
+- Bank-account transfer requirements
+- Grievance redressal
+- Lender verification
+- Cybercrime reporting
+
+## How It Works
+
+```text
+User Input
+    |
+    v
+Data Acquisition
+    |
+    v
+Data Preprocessing
+    |
+    v
+Feature Engineering
+    |
+    v
+ML and Review Analysis
+    |
+    v
+Risk Score and Level
+    |
+    v
+Explainable Results
+    |
+    v
+Safety Guidance
+```
+
+## ML-Based Risk Assessment
+
+FinShield uses a machine-learning classification pipeline to distinguish
+between legitimate and potentially predatory lending applications. The model
+combines multiple application-level signals rather than relying on a single
+rating.
+
+### Reported Project Evaluation
+
+| Metric | Value |
+| --- | ---: |
+| Manually verified loan applications | 80+ |
+| Model accuracy | 88% |
+| Prediction time | Approximately 2 seconds per app |
+
+These figures represent the project evaluation during development and may
+change as the dataset and model are expanded or retrained.
+
+## Review and Sentiment Analysis
+
+FinShield derives the following indicators from user reviews:
+
+- Average review sentiment
+- Strongly negative review percentage
+- Harassment-related mentions
+- Review-length characteristics
+
+These signals are combined with application-level indicators for broader risk
+assessment.
+
+## Technology Stack
+
+| Technology | Purpose |
+| --- | --- |
+| Python | Application and ML pipeline |
+| Streamlit | Web application |
+| Scikit-learn | Model training, evaluation, and prediction |
+| VADER Sentiment | Review sentiment analysis |
+| Pandas and NumPy | Data processing and numerical computation |
+| Google Play metadata collection | App metadata and review collection |
+| PyMuPDF | PDF text and table extraction |
+| Git | Version control and collaboration |
+
+## Project Structure
+
+```text
+FinShield/
+├── .streamlit/
+├── core/
+│   ├── __init__.py
+│   ├── config.py
+│   ├── data.py
+│   ├── explanations.py
+│   ├── features.py
+│   └── scoring.py
+├── app_final.py
+├── Googleplay_scraper.py
+├── Pipeline_notebook.ipynb
+├── dataset_dla_check.ipynb
+├── app_features_final.csv
+├── app_metadata_clean.csv
+├── dla_dataset.csv
+├── permissions_filled.csv
+├── raw_reviews_clean.csv
+├── predatory_loan_detector.pkl
+├── requirements.txt
+├── .gitignore
+└── README.md
+```
+
+### Core Modules
+
+| Component | Purpose |
+| --- | --- |
+| `app_final.py` | Streamlit UI and application orchestration |
+| `core/config.py` | Shared configuration, paths, and constants |
+| `core/data.py` | Dataset/model loading and app lookup |
+| `core/features.py` | Disclosure and install-count feature creation |
+| `core/explanations.py` | Human-readable risk explanations |
+| `core/scoring.py` | ML prediction and known-entity detection |
+| `Googleplay_scraper.py` | Google Play metadata and review collection |
+| `Pipeline_notebook.ipynb` | Feature engineering and model analysis |
+| `dataset_dla_check.ipynb` | DLA dataset inspection and validation |
+
+The CSV files contain processed application, permission, regulatory, and review
+data. The `.pkl` file contains the trained model artifact.
+
+Local virtual environments, Python caches, notebook checkpoints, temporary
+archives, logs, and other development artifacts should not be committed to
+Git.
+
+## Development Pipeline
+
+```text
+Google Play Store and public sources
+                |
+                v
+          Data collection
+                |
+                v
+        Raw and cleaned data
+                |
+                v
+       Data preprocessing
+                |
+                v
+       Feature engineering
+                |
+                v
+          ML pipeline
+                |
+                v
+        Model evaluation
+                |
+                v
+           Deployment
+                |
+                v
+          FinShield UI
+```
+
+## Getting Started
+
+### 1. Clone the Repository
+
+```bash
 git clone <YOUR_GITHUB_REPOSITORY_URL>
 cd <YOUR_PROJECT_FOLDER>
+```
 
-Create a virtual environment
+### 2. Create and Activate a Virtual Environment
 
+#### Windows
+
+```bash
 python -m venv venv
-
-Activate it:
-
-Windows
-
 venv\Scripts\activate
+```
 
-Linux / macOS
+#### Linux or macOS
 
+```bash
+python -m venv venv
 source venv/bin/activate
+```
 
-Install dependencies
+### 3. Install Dependencies
 
-pip install -r requirements.txt
+```bash
+python -m pip install -r requirements.txt
+```
 
-Run FinShield
+### 4. Run the Application
 
-streamlit run app.py
+```bash
+streamlit run app_final.py
+```
 
-The exact entry-point filename may differ depending on the repositorystructure.
+The active modular-refactor work is isolated on the
+`refactor/modularize-core` branch.
 
-🌐 Live Demo
+## Notebook Environment
 
-FinShield Web App
+The notebook must use the same Python environment where its packages are
+installed. In VS Code, select the `venv` kernel for
+`Pipeline_notebook.ipynb`.
 
-https://finshield---loan-app-detectorgit-bywwrgim8e5mbnpnzn3qme.streamlit.app/
+If a package works in the terminal but not in a notebook cell, install it into
+the active notebook kernel:
 
-🎯 Objectives
+```python
+%pip install seaborn matplotlib
+```
+
+Restart the notebook kernel after installation and rerun the cells from the
+beginning.
+
+## DLA Dataset
+
+`dla_dataset.csv` is the provenance-aware RBI Public Directory dataset. It
+contains RBI serial numbers, source pages and rows, regulated entities, DLA
+links, owner/LSP details, grievance contacts, platform identifiers, and source
+metadata.
+
+RBI directory membership is regulatory evidence. It is not proof that an app
+is safe, non-predatory, or legally compliant in every dimension. Do not use
+`rbi_dla_listed` as a direct predatory/non-predatory training label.
+
+## Current Modules
+
+| Module | Purpose |
+| --- | --- |
+| App Risk Scorer | Evaluate lending-app risk |
+| Borrower Safety Profiler | Assess borrower safety habits |
+| Product Rankings | Search evaluated applications |
+| Advisory Calculators | Understand loan costs and APR |
+| RBI Guidelines | Provide lending-safety guidance |
+
+## Objectives
 
 FinShield aims to:
 
-Help users identify potentially risky lending applications beforeinstallation.
+- Identify potentially risky lending applications before installation
+- Make lending-safety indicators easier to understand
+- Encourage verification through official regulatory resources
+- Highlight privacy and harassment-related risks
+- Help borrowers understand the cost of short-term loans
+- Promote transparency and safer participation in digital lending
 
-Make complex lending-safety indicators easier to understand.
+## Future Scope
 
-Encourage users to verify lenders through official regulatoryresources.
+- Continuous dataset expansion
+- Automated end-to-end ML pipeline
+- Easier model replacement and retraining
+- Integration with live verification sources
+- Browser extension
+- Android application
+- App-store and fintech-platform integration
+- Larger-scale real-time monitoring
 
-Highlight privacy and harassment-related risks.
-
-Help borrowers understand the real cost of short-term loans.
-
-Promote transparency and safer participation in the digital lendingecosystem.
-
-🌍 Impact
-
-For End Users
-
-Identify risky applications before installation.
-
-Make more informed borrowing decisions.
-
-Reduce exposure to fraud, privacy violations and harassment.
-
-Understand lending costs more clearly.
-
-For the Financial Ecosystem
-
-Encourage responsible digital lending.
-
-Promote transparency and trust.
-
-Provide scalable AI-assisted decision support.
-
-Support continuous monitoring and model improvement.
-
-For Regulatory Support
-
-FinShield can complement existing verification initiatives by helpingusers identify suspicious indicators and directing them toward officialverification and reporting resources.
-
-🔮 Future Scope
-
-The project roadmap includes:
-
-Continuous dataset expansion
-
-Automated end-to-end ML pipeline
-
-Easy model replacement and retraining
-
-Integration with live verification sources
-
-Browser extension
-
-Android application
-
-Integration with app stores and fintech platforms
-
-Larger-scale real-time monitoring
-
-📚 Data & References
+## Data and References
 
 FinShield's project material references:
 
-Google Play Store --- app metadata, permissions, install counts,ratings and reviews.
+- Google Play Store: metadata, permissions, installs, ratings, and reviews
+- Reserve Bank of India (RBI): digital lending guidelines and regulatory information
+- Public regulatory and domain-specific sources concerning risky or predatory lending applications
+- Custom datasets created through data collection, manual verification, and feature engineering
 
-Reserve Bank of India (RBI) --- digital lending guidelines andregulatory information.
+## Disclaimer
 
-Public reports and regulatory references concerningpredatory/banned loan applications.
+FinShield is an informational and decision-support tool.
 
-Custom dataset created using Google Play Store data collection,manual verification and domain-specific feature engineering.
+A risk score should not be treated as definitive proof that an application is
+legitimate, fraudulent, or illegal. Users should independently verify lenders
+through official regulatory sources before sharing sensitive information or
+entering into a financial agreement.
 
-⚠️ Disclaimer
+## Team
 
-FinShield is an informational and decision-support tool, not afinancial or legal authority.
+- **Team:** Synapesex
+- **College:** Hindustan College of Science and Technology, Farah, Mathura
+- **Team Leader:** Oorvi Kulshreshtha
 
-A risk score should not be treated as definitive proof that anapplication is legitimate, fraudulent, or illegal. Users shouldindependently verify lenders through official regulatory sources beforesharing sensitive information or entering into a financial agreement.
+## Vision
 
-👥 Team
+Make digital lending safer, more transparent, and easier to understand before
+a borrower clicks **Install**.
 
-Team Name: Synapesex
-
-College: Hindustan College of Science and Technology, Farah, Mathura
-
-Team Leader: Oorvi Kulshreshtha
-
-⭐ Vision
-
-Make digital lending safer, more transparent, and easier tounderstand --- before a borrower clicks "Install."
-
-FinShield combines risk analysis, borrower awareness, financialcalculations and regulatory guidance into one accessible digital lendingsafety hub.
+FinShield brings risk assessment, borrower awareness, financial calculations,
+and regulatory guidance together in one digital lending safety hub.
