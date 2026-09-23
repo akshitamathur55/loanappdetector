@@ -265,59 +265,17 @@ Google Play Store and public sources
 
 ## Getting Started
 
-### 1. Clone the Repository
-
-```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
-cd <YOUR_PROJECT_FOLDER>
-```
-
-### 2. Create and Activate a Virtual Environment
-
-#### Windows
-
-```bash
-python -m venv venv
-venv\Scripts\activate
-```
-
-#### Linux or macOS
-
-```bash
-python -m venv venv
-source venv/bin/activate
-```
-
-### 3. Install Dependencies
+### 1. Install Dependencies
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-### 4. Run the Application
+### 2. Run the Application
 
 ```bash
 streamlit run app_final.py
 ```
-
-The active modular-refactor work is isolated on the
-`refactor/modularize-core` branch.
-
-## Notebook Environment
-
-The notebook must use the same Python environment where its packages are
-installed. In VS Code, select the `venv` kernel for
-`Pipeline_notebook.ipynb`.
-
-If a package works in the terminal but not in a notebook cell, install it into
-the active notebook kernel:
-
-```python
-%pip install seaborn matplotlib
-```
-
-Restart the notebook kernel after installation and rerun the cells from the
-beginning.
 
 ## DLA Dataset
 
@@ -382,7 +340,7 @@ entering into a financial agreement.
 
 ## Team
 
-- **Team:** Synapesex
+- **Team:** SynapeseX
 - **College:** Hindustan College of Science and Technology, Farah, Mathura
 - **Team Leader:** Oorvi Kulshreshtha
 
