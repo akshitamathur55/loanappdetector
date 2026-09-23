@@ -1,7 +1,6 @@
-import re
 import math
-import os
-import joblib
+import re
+
 import pandas as pd
 import streamlit as st
 import textwrap
@@ -9,206 +8,19 @@ import requests
 from bs4 import BeautifulSoup
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
+from core.config import FEATURES_CSV_PATH, REDFLAG_PATTERN
+from core.data import get_app_choices, load_features_table, lookup_app_features, model_available
+from core.features import disclosure_score, parse_installs
+from core.scoring import is_known_entity, predict
+
 try:
     from google_play_scraper import app as play_app_scraper, reviews as play_reviews_scraper
     HAS_PLAY_SCRAPER = True
 except ImportError:
     HAS_PLAY_SCRAPER = False
 
-
-FEATURE_COLUMNS = [
-    "contacts", "sms", "microphone", "location", "photos_media_storage",
-    "disclosure_score", "review_redflag_score", "avg_review_sentiment",
-    "pct_strongly_negative_reviews", "avg_review_length", "install_count",
-]
-
-REDFLAG_KEYWORDS = [
-    'harass', 'threat', 'blackmail', 'recovery agent', 'shared my contact',
-    'shared my photo', 'called my family', 'called my office', 'called my boss',
-    'defame', 'morphed', 'abuse', 'extort', 'humiliate', 'fake photo',
-    'contacted my', 'leak my photo', 'suicide', 'fraud app', 'scam',
-    'collecting data', 'ask reference', 'visit my work', 'threatening',
-]
-REDFLAG_PATTERN = re.compile('|'.join(re.escape(k) for k in REDFLAG_KEYWORDS), re.I)
-
-FEATURES_CSV_PATH = "app_features_final.csv"
-MIN_REVIEWS_REQUIRED = 10
-
-KNOWN_BANKS = [
-    "hdfc", "icici", "sbi", "statebank", "axis", "kotak", "baroda", "bob", "pnb",
-    "canara", "unionbank", "idfc", "indusind", "yesbank", "rbl", "federal", "centralbank",
-    "indianbank", "uco", "bankofindia", "iob", "psb", "dbs", "hsbc", "citi", "standardchartered",
-    "bandhan", "au", "aubank", "equitas", "ujjivan", "jana", "survodaya",
-    "ltfinance", "ltfs", "lntfinance", "lt-finance", "bajaj", "bajajfinserv", "bajajfinance",
-    "tata", "tatacapital", "tataneu", "piramal", "adityabirla", "abfl", "godrej", "godrejcapital",
-    "mahindra", "mmfsl", "shriram", "stfc", "muthoot", "muthootfinance", "manappuram",
-    "cholamandalam", "chola", "sundaram", "iifl", "hero", "herofincorp", "tvssundaram", "tvscredit",
-    "lendingkart", "creditsaison", "homecredit", "paytm", "groww", "kreditbee", "navi", "fibe",
-    "earlysalary", "moneyview", "cashe", "kissht", "stashfin", "faircent", "mpokket", "slice",
-    "onecard", "fatakpay", "cred", "jupiter", "freo", "lazypay", "branch", "nira", "flexiloans",
-    "zest", "zestmoney", "dhanvarsha", "indialends", "rupeeredee"
-]
-
 analyzer = SentimentIntensityAnalyzer()
-
-def explain_feature(name: str, value) -> tuple[str, bool]:
-    if name == "contacts":
-        return ("Asks for access to your Contacts list — not something a loan app genuinely needs", True) if value else \
-               ("Does not ask for your Contacts list", False)
-    if name == "sms":
-        return ("Asks to read your SMS messages — often used to intercept OTPs or spam your contacts", True) if value else \
-               ("Does not ask to read your SMS messages", False)
-    if name == "microphone":
-        return ("Asks for access to your Microphone — unusual for a loan app", True) if value else \
-               ("Does not ask for microphone access", False)
-    if name == "location":
-        return ("Asks for your precise Location", True) if value else \
-               ("Does not ask for your location", False)
-    if name == "photos_media_storage":
-        return ("Asks for access to your Photos & Media — has been used in some cases to threaten borrowers with personal images", True) if value else \
-               ("Does not ask for access to your photos", False)
-    if name == "disclosure_score":
-        v = value or 0
-        if v <= 2:
-            return (f"Barely explains its own terms — only {v} of 5 basics disclosed (interest rate, tenure, RBI/NBFC registration, support contact, privacy policy)", True)
-        return (f"Clearly discloses key loan terms ({v} of 5 basics covered)", False)
-    if name == "review_redflag_score":
-        pct = (value or 0) * 100
-        if pct >= 10:
-            return (f"About {pct:.0f}% of reviews mention harassment, threats, or recovery-agent abuse", True)
-        return ("Very few reviews mention harassment or threats", False)
-    if name == "avg_review_sentiment":
-        if (value or 0) > 0.5:
-            return ("Reviews are unusually, uniformly positive — sometimes a sign of fake/boosted reviews burying real complaints", True)
-        if (value or 0) < -0.2:
-            return ("Reviews lean negative overall", True)
-        return ("Reviews show a normal, mixed sentiment", False)
-    if name == "pct_strongly_negative_reviews":
-        pct = (value or 0) * 100
-        if pct >= 15:
-            return (f"About {pct:.0f}% of reviews are strongly negative", True)
-        return ("Few reviews are strongly negative", False)
-    if name == "avg_review_length":
-        if (value or 0) >= 15:
-            return ("Reviews tend to be long and detailed — often a sign of genuine, specific complaints", True)
-        return ("Reviews tend to be short, generic comments", False)
-    if name == "install_count":
-        v = value or 0
-        if v < 10000:
-            return (f"Relatively few installs ({v:,}) — less track record to go on", True)
-        return (f"Has a substantial install base ({v:,})", False)
-    return (f"{name}: {value}", False)
-
-FEATURE_LABELS = {
-    "contacts": "Contacts permission", "sms": "SMS permission",
-    "microphone": "Microphone permission", "location": "Location permission",
-    "photos_media_storage": "Photos/Media permission",
-    "disclosure_score": "Terms disclosure", "review_redflag_score": "Harassment mentions in reviews",
-    "avg_review_sentiment": "Review sentiment pattern", "pct_strongly_negative_reviews": "Strongly negative reviews",
-    "avg_review_length": "Review detail level", "install_count": "Install base",
-}
-
-def disclosure_score(description: str, privacy_policy: str) -> int:
-    desc = str(description).lower()
-    has_rate = bool(re.search(r'interest rate|% pa|apr|per annum|processing fee', desc))
-    has_tenure = bool(re.search(r'tenure|repayment period|months|loan period', desc))
-    has_reg = bool(re.search(r'rbi[- ]registered|nbfc|registration number|cin ', desc))
-    has_contact = bool(re.search(r'customer care|grievance|support@|contact us|helpline', desc))
-    pp = str(privacy_policy)
-    has_pp = pp not in ('nan', '', 'None') and 'http' in pp
-    return int(has_rate) + int(has_tenure) + int(has_reg) + int(has_contact) + int(has_pp)
-
-def parse_installs(installs_text: str):
-    if not installs_text:
-        return None
-    digits = re.sub(r'[^0-9]', '', str(installs_text))
-    return int(digits) if digits else 0
-
-@st.cache_data
-def load_features_table():
-    return pd.read_csv(FEATURES_CSV_PATH)
-
-def get_app_choices():
-    try:
-        df = load_features_table()
-        return sorted(df["app_name"].dropna().astype(str).unique().tolist())
-    except FileNotFoundError:
-        return []
-
-
-def lookup_app_features(identifier: str):
-    df = load_features_table()
-    ident = str(identifier).strip().lower()
-
-    id_col = df["app_id"].astype(str).str.lower() if "app_id" in df.columns else None
-    name_col = df["app_name"].astype(str).str.lower() if "app_name" in df.columns else None
-
-    if id_col is not None and name_col is not None:
-        match = df[(id_col == ident) | (name_col == ident)]
-    elif name_col is not None:
-        match = df[name_col == ident]
-    else:
-        match = df[id_col == ident]
-
-    if match.empty:
-        return None
-
-    row = match.iloc[0]
-    res = {col: row[col] for col in FEATURE_COLUMNS if col in row}
-    if "app_id" in row:
-        res["app_id"] = str(row["app_id"]).strip()
-    if "app_name" in row:
-        res["app_name"] = str(row["app_name"]).strip()
-    return res
-
-USE_FAKE_MODEL = not os.path.exists("predatory_loan_detector.pkl")
-
-@st.cache_resource
-def load_model():
-    model = joblib.load("predatory_loan_detector.pkl")
-    if hasattr(model, "named_steps") and "classifier" in model.named_steps:
-        clf = model.named_steps["classifier"]
-        if not hasattr(clf, "multi_class"):
-            clf.multi_class = "auto"
-    elif not hasattr(model, "multi_class"):
-        model.multi_class = "auto"
-    return model
-
-def _fake_predict(features: dict):
-    score = (
-        0.10
-        + features["review_redflag_score"] * 0.5
-        + features["pct_strongly_negative_reviews"] * 0.2
-        + (5 - features["disclosure_score"]) * 0.04
-        + (features["contacts"] + features["sms"]) * 0.05
-    )
-    score = min(max(score, 0.0), 0.97)
-    watch_list = ["review_redflag_score", "disclosure_score", "contacts", "sms"]
-    reasons = [explain_feature(name, features[name]) for name in watch_list]
-    return score, reasons
-
-def predict(features: dict):
-    if features.get("is_known_legit"):
-        return 0.08, [
-            ("Regulated Bank / NBFC entity with compliant data privacy practices.", False),
-            ("Zero prohibited contact or photo storage permissions requested.", False),
-            ("Transparent loan terms and clear APR disclosures.", False),
-            ("Verified RBI lending compliance.", False)
-        ]
-    if USE_FAKE_MODEL:
-        return _fake_predict(features)
-    model = load_model()
-    row = pd.DataFrame([features], columns=FEATURE_COLUMNS).fillna(0)
-    proba = model.predict_proba(row)[0][1]  
-    classifier = model.named_steps["classifier"]
-    feature_names = model.named_steps["preprocessor"].get_feature_names_out()
-    coefs = dict(zip(feature_names, classifier.coef_[0]))
-    top = sorted(coefs.items(), key=lambda kv: abs(kv[1]), reverse=True)[:4]
-    reasons = []
-    for name, _coef in top:
-        clean_name = name.replace("num__", "")
-        reasons.append(explain_feature(clean_name, features.get(clean_name, 0)))
-    return proba, reasons
+USE_FAKE_MODEL = not model_available()
 
 @st.cache_data
 def get_ranked_apps_df():
@@ -229,9 +41,7 @@ def get_ranked_apps_df():
         if any(ex in app_id_clean for ex in EXCLUDED_NON_LENDING_IDS):
             continue
         feat = row.to_dict()
-        name_lower = str(feat.get('app_name', '')).lower()
-        id_lower = str(feat.get('app_id', '')).lower()
-        is_known = any(b in name_lower or b in id_lower for b in KNOWN_BANKS) or bool(feat.get('is_known_legit', False))
+        is_known = is_known_entity(feat) or bool(feat.get('is_known_legit', False))
         if is_known:
             feat['is_known_legit'] = True
         
@@ -403,7 +213,7 @@ def scrape_playstore_live(pkg_id: str) -> dict | None:
         pct_strongly_negative_reviews = 0.05
         avg_review_length = 15.0
 
-    is_known = any(b in app_name.lower() or b in clean_id.lower() for b in KNOWN_BANKS)
+    is_known = is_known_entity({"app_name": app_name, "app_id": clean_id})
 
     return {
         "app_id": clean_id,
@@ -488,7 +298,7 @@ def scrape_web_domain_live(url_or_domain: str) -> dict | None:
         has_loc = 1 if any(w in text_lower for w in ["location", "gps access"]) else 0
         has_storage = 1 if any(w in text_lower for w in ["gallery", "photos", "storage permission", "media access"]) else 0
 
-        is_known = any(b in display_name.lower() or b in raw_input.lower() for b in KNOWN_BANKS)
+        is_known = is_known_entity({"app_name": display_name, "app_id": raw_input})
 
         return {
             "app_id": raw_input,
@@ -537,7 +347,7 @@ def build_unlisted_app_features(pkg_id_or_input: str) -> dict:
     ]
     SUSPICIOUS_TLDS = [".xyz", ".top", ".online", ".site", ".vip", ".cc", ".tech", ".link", ".win", ".club"]
     
-    is_known = any(b in pkg_clean for b in KNOWN_BANKS)
+    is_known = is_known_entity({"app_name": raw_input, "app_id": pkg_clean})
     has_risk_terms = any(t in pkg_clean for t in HIGH_RISK_TERMS)
     has_suspicious_tld = any(pkg_clean.endswith(tld) or (tld + "/") in pkg_clean for tld in SUSPICIOUS_TLDS)
     
@@ -1663,8 +1473,7 @@ with tab_scorer:
                         has_contacts = (features.get("contacts", 0) == 1)
                         has_sms = (features.get("sms", 0) == 1)
 
-                        name_lower = str(package_name).lower()
-                        is_known = any(b in name_lower for b in KNOWN_BANKS) or features.get("is_known_legit", False)
+                        is_known = is_known_entity(features) or features.get("is_known_legit", False)
 
                         if is_known or (score < 0.30 and redflag_pct < 5 and not has_contacts):
                             rbi_val, rbi_lvl = "Regulated", "green"

@@ -5,3 +5,6 @@ vaderSentiment
 joblib
 google-play-scraper
 beautifulsoup4
+pymupdf
+matplotlib
+seaborn
